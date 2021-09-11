@@ -62,3 +62,6 @@ typings/
 credentials.json
 token.json
 .vscode/launch.json
+
+
+dist/*.mp4
