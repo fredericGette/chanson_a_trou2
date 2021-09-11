@@ -1,6 +1,8 @@
 'use strict';
 
 import $ from 'jquery'
+import './style.css';
+import WeAreTheChampions from './Queen-We-Are-The-Champions.mp3';
 const ProgressBar = require('progressbar.js');
 const Fireworks = require('fireworks-canvas');
 
@@ -48,7 +50,6 @@ let questionView = () => {
                     player.div.addClass('playerClass');    
                 } else {
                     player.div.removeClass('badAnswerPlayer');
-                    player.div.removeClass('fastAnswerPlayer');
                 }
                 playersDiv.append(player.div);
                 player.div.removeClass('playerAnswered');
@@ -151,14 +152,7 @@ let answerView = () => {
 }
 
 let displayAnswer = async (columnTrue,headerTrue,columnFalse,headerFalse,nextQuestionDiv) => {
-    let sound = undefined;
-    if (questions[questionIdx].answer == true) {
-        sound = new Audio('true.wav');
-    } else {
-        sound = new Audio('false.wav');
-    }
-    await sound.play();
-
+ 
     if (questions[questionIdx].answer == true) {
         columnTrue.addClass('goodAnswerBackground');
         headerFalse.addClass('badAnswerHeader');
@@ -168,13 +162,16 @@ let displayAnswer = async (columnTrue,headerTrue,columnFalse,headerFalse,nextQue
     }
 
     if (questionIdx > 0) {
+        let debugScores = '';
         players.forEach((player, name)=> {
             if (player.answer != questions[questionIdx].answer) {
                 player.div.addClass('badAnswerPlayer');
             } else {
                 player.score++;
             }
+            debugScores += `['${name}',{score:${player.score}}],\n`
         });    
+        console.log(debugScores);
     }
 
     setTimeout(() => {
@@ -206,7 +203,7 @@ let displayAnswer = async (columnTrue,headerTrue,columnFalse,headerFalse,nextQue
  * Display the "final" view.
  */ 
 let finalView = () => {
-    let sound = new Audio('Queen-We-Are-The-Champions.mp3');
+    let sound = new Audio(WeAreTheChampions);
     sound.currentTime = 23.0;
     sound.play();
     
@@ -390,5 +387,8 @@ socket.onmessage = (event) => {
     console.log('processed: '+rawScan);
 }
 
+let body = $('body');
+let main = $('<div id="main"></div>');
+body.append(main);
 questionView();
 
